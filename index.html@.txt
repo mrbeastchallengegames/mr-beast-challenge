@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MrBeast Challenge Registration</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f9;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      width: 100%;
+      max-width: 500px;
+      margin: 50px auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      font-weight: bold;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    button {
+      width: 100%;
+      background: #28a745;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #218838;
+    }
+    .hidden {
+      display: none;
+    }
+    .success {
+      text-align: center;
+      color: #333;
+    }
+    .success a {
+      color: #007BFF;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    .success a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="registration">
+    <h2>MrBeast Challenge Registration</h2>
+    <form id="regForm">
+      <label for="name">Full Name</label>
+      <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+
+      <label for="email">Email Address</label>
+      <input type="email" id="email" name="email" placeholder="Enter your email" required>
+
+      <label for="phone">Phone Number (with country code)</label>
+      <input type="tel" id="phone" name="phone" placeholder="+234 812 345 6789" required>
+
+      <label for="age">Age</label>
+      <input type="number" id="age" name="age" placeholder="Enter your age" required>
+
+      <label for="residence">Country of Residence</label>
+      <input type="text" id="residence" name="residence" placeholder="Enter your country" required>
+
+      <label for="giftcard">Gift Card Type</label>
+      <select id="giftcard" name="giftcard" required>
+        <option value="">Select gift card type</option>
+        <option value="Amazon">Amazon</option>
+        <option value="iTunes">iTunes</option>
+        <option value="Steam">Steam</option>
+        <option value="Google Play">Google Play</option>
+        <option value="Other">Other</option>
+      </select>
+
+      <button type="submit">Register</button>
+    </form>
+  </div>
+
+  <div class="container hidden success" id="confirmation">
+    <h2>Congratulations!</h2>
+    <p>You have successfully registered for the <strong>MrBeast Challenge</strong>.</p>
+    <p>To secure your spot, kindly send your <strong>Gift Card details</strong> (number & type) to 
+      <a href="mailto:mrbeastchallengegame@gmail.com">mrbeastchallengegame@gmail.com</a>.
+    </p>
+    <p><strong>Note:</strong> The $20 entry fee is used strictly to secure participants’ slots and prevent spam registrations. 
+      MrBeast is not the one collecting this fee — it is a processing policy for this challenge.</p>
+  </div>
+
+  <script>
+    const form = document.getElementById('regForm');
+    const registrationDiv = document.getElementById('registration');
+    const confirmationDiv = document.getElementById('confirmation');
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      registrationDiv.classList.add('hidden');
+      confirmationDiv.classList.remove('hidden');
+    });
+  </script>
+</body>
+</html>
