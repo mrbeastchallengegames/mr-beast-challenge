@@ -1,141 +1,336 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MrBeast Challenge Registration</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f4f9;
-      margin: 0;
-      padding: 0;
-    }
-    .container {
-      width: 100%;
-      max-width: 500px;
-      margin: 50px auto;
-      background: #fff;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
-    h2 {
-      text-align: center;
-      color: #333;
-    }
-    label {
-      display: block;
-      margin: 10px 0 5px;
-      font-weight: bold;
-    }
-    input, select {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 15px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-    }
-    button {
-      width: 100%;
-      background: #28a745;
-      color: white;
-      padding: 12px;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #218838;
-    }
-    .hidden {
-      display: none;
-    }
-    .success {
-      text-align: center;
-      color: #333;
-    }
-    .success a {
-      color: #007BFF;
-      font-weight: bold;
-      text-decoration: none;
-    }
-    .success a:hover {
-      text-decoration: underline;
-    }
-    .phone-input {
-      display: flex;
-      gap: 10px;
-    }
-    .phone-input select {
-      max-width: 120px;
-    }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>MrBeast Challenge Registration</title>
+<style>
+  :root{
+    --beast-blue:#00C2FF;
+    --beast-pink:#FF2DF5;
+    --card:#ffffff;
+    --text:#1f2937;
+    --ok:#28a745;
+    --ok-dark:#218838;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;
+    color:var(--text);
+    background: linear-gradient(135deg, #0fe3ff 0%, #00a8ff 40%, #7a00ff 100%);
+    min-height:100svh;
+    overflow-x:hidden;
+  }
+
+  /* top wave */
+  .wave-top{
+    position:fixed; inset:0 auto auto 0; width:120%; height:180px; z-index:0; transform:translateY(-60px);
+  }
+  .wave-bottom{
+    position:fixed; inset:auto 0 -60px 0; width:120%; height:220px; z-index:0;
+  }
+
+  /* Money/confetti spray at edges */
+  .spray:before, .spray:after{
+    content:"💸 🎈 💸 🎉 💵 🎈 💸 🎉";
+    position:fixed; top:0; bottom:0; width:64px; display:flex; align-items:center;
+    writing-mode:vertical-rl; text-orientation:upright; opacity:.25; pointer-events:none;
+    font-size:22px; line-height:1.4; letter-spacing:6px;
+  }
+  .spray:before{ left:0; }
+  .spray:after{ right:0; }
+
+  /* Floating balloons */
+  .balloons{ position:fixed; inset:auto 0 0 0; height:0; pointer-events:none; }
+  .balloon{
+    position:absolute; bottom:-120px; width:26px; height:36px; border-radius:50% 50% 50% 50%/60% 60% 40% 40%;
+    background:radial-gradient(circle at 30% 30%, #fff6, transparent 50%), var(--beast-pink);
+    box-shadow:0 8px 20px #0002; animation:float 10s linear infinite;
+  }
+  .balloon:after{
+    content:""; position:absolute; left:50%; top:36px; width:2px; height:70px; background:#ffffff80;
+    transform:translateX(-50%);
+  }
+  .balloon.blue{ background:radial-gradient(circle at 30% 30%, #fff6, transparent 50%), var(--beast-blue); }
+  @keyframes float{
+    0%{ transform:translateY(0) translateX(0) rotate(0deg); opacity:.7; }
+    50%{ transform:translateY(-60vh) translateX(20px) rotate(2deg); opacity:.9; }
+    100%{ transform:translateY(-120vh) translateX(-20px) rotate(-2deg); opacity:0; }
+  }
+
+  .container{
+    position:relative; z-index:1;
+    width:100%; max-width:560px; margin:64px auto; padding:0 16px;
+  }
+  .card{
+    background:var(--card);
+    border-radius:18px;
+    box-shadow:0 18px 60px rgba(0,0,0,.18);
+    overflow:hidden;
+  }
+  .card-header{
+    background:linear-gradient(135deg, var(--beast-blue), var(--beast-pink));
+    color:#fff; padding:24px;
+  }
+  .card-header h2{
+    margin:0; text-align:center; font-weight:800; letter-spacing:.3px;
+    text-shadow:0 2px 12px rgba(0,0,0,.25);
+  }
+  .card-body{ padding:22px 20px 24px; }
+  label{ display:block; font-weight:700; margin:12px 0 6px; }
+  input, select{
+    width:100%; padding:12px 12px; border:1px solid #e5e7eb; border-radius:10px; font-size:16px; outline:none;
+  }
+  input:focus, select:focus{ border-color:var(--beast-blue); box-shadow:0 0 0 3px rgba(0,194,255,.2); }
+  .row{ display:flex; gap:10px; }
+  .row>*{ flex:1; }
+  .phone-row{ display:flex; gap:10px; }
+  .phone-row select{ max-width:180px; }
+
+  button{
+    width:100%; margin-top:8px;
+    background:var(--ok); color:#fff; border:0; padding:13px 16px; border-radius:10px; font-size:16px; font-weight:800;
+    cursor:pointer; box-shadow:0 8px 20px rgba(40,167,69,.25);
+  }
+  button:hover{ background:var(--ok-dark); }
+  .muted{ color:#6b7280; font-size:13px; margin-top:6px; }
+
+  .hidden{ display:none; }
+
+  .success{
+    padding:26px 20px 28px;
+    text-align:center;
+  }
+  .success h3{ margin:8px 0 6px; }
+  .pill{
+    display:inline-block; padding:6px 10px; background:#f1f5f9; border-radius:999px; font-size:12px; color:#334155; margin:2px 4px;
+  }
+  .links a{ color:#0066ff; text-decoration:none; font-weight:800; }
+  .links a:hover{ text-decoration:underline; }
+  .steps{ text-align:left; margin:12px auto 0; max-width:460px; }
+  .steps li{ margin:8px 0; }
+  .note{ font-size:13px; color:#334155; background:#f8fafc; border:1px dashed #cbd5e1; padding:10px 12px; border-radius:10px; margin-top:10px; }
+
+  footer{ text-align:center; color:#ffffffcc; font-size:12px; padding:10px 0 24px; }
+</style>
 </head>
-<body>
-  <div class="container" id="registration">
-    <h2>MrBeast Challenge Registration</h2>
-    <form id="regForm">
-      <label for="name">Full Name</label>
-      <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+<body class="spray">
 
-      <label for="email">Email Address</label>
-      <input type="email" id="email" name="email" placeholder="Enter your email" required>
+  <!-- waves -->
+  <svg class="wave-top" viewBox="0 0 1200 200" preserveAspectRatio="none">
+    <path d="M0,80 C300,140 900,0 1200,80 L1200,0 L0,0 Z" fill="rgba(255,255,255,0.18)"></path>
+    <path d="M0,120 C300,200 900,60 1200,120 L1200,0 L0,0 Z" fill="rgba(255,255,255,0.10)"></path>
+  </svg>
 
-      <label for="phone">Phone Number</label>
-      <div class="phone-input">
-        <select id="countryCode" name="countryCode" required>
-          <option value="+1">🇺🇸 +1 (US)</option>
-          <option value="+44">🇬🇧 +44 (UK)</option>
-          <option value="+234">🇳🇬 +234 (Nigeria)</option>
-          <option value="+91">🇮🇳 +91 (India)</option>
-          <option value="+61">🇦🇺 +61 (Australia)</option>
-          <option value="+81">🇯🇵 +81 (Japan)</option>
-        </select>
-        <input type="tel" id="phone" name="phone" placeholder="812 345 6789" required>
+  <div class="container">
+    <div class="card" id="registration">
+      <div class="card-header">
+        <h2>MrBeast Challenge — Registration</h2>
       </div>
+      <div class="card-body">
+        <form id="regForm" autocomplete="on">
+          <label for="name">Full Name</label>
+          <input id="name" name="name" type="text" placeholder="Enter your full name" required>
 
-      <label for="age">Age</label>
-      <input type="number" id="age" name="age" placeholder="Enter your age" required>
+          <label for="email">Email Address</label>
+          <input id="email" name="email" type="email" placeholder="Enter your email" required>
 
-      <label for="residence">Country of Residence</label>
-      <input type="text" id="residence" name="residence" placeholder="Enter your country" required>
+          <label>Phone Number</label>
+          <div class="phone-row">
+            <select id="countryCode" name="countryCode" required></select>
+            <input id="phone" name="phone" type="tel" placeholder="812 345 6789" required>
+          </div>
+          <div class="muted">Pick your country code (e.g., <b>+234</b>) then enter your number.</div>
 
-      <label for="giftcard">Gift Card Type</label>
-      <select id="giftcard" name="giftcard" required>
-        <option value="">Select gift card type</option>
-        <option value="Amazon">Amazon</option>
-        <option value="iTunes">iTunes</option>
-        <option value="Steam">Steam</option>
-        <option value="Google Play">Google Play</option>
-        <option value="Other">Other</option>
-      </select>
+          <div class="row">
+            <div>
+              <label for="age">Age</label>
+              <input id="age" name="age" type="number" min="10" max="100" placeholder="Enter your age" required>
+            </div>
+            <div>
+              <label for="residence">Country of Residence</label>
+              <input id="residence" name="residence" type="text" placeholder="Enter your country" required>
+            </div>
+          </div>
 
-      <button type="submit">Register</button>
-    </form>
+          <label for="giftcard">Gift Card Type</label>
+          <select id="giftcard" name="giftcard" required>
+            <option value="">Select gift card type</option>
+            <option>Amazon</option><option>iTunes / Apple</option><option>Google Play</option>
+            <option>Steam</option><option>PlayStation</option><option>Xbox</option>
+            <option>Netflix</option><option>Spotify</option><option>eBay</option>
+            <option>Walmart</option><option>Target</option><option>Best Buy</option>
+            <option>Sephora</option><option>Uber / Uber Eats</option><option>DoorDash</option>
+            <option>Visa / Mastercard Prepaid</option><option>Stripe Prepaid</option>
+            <option>Nike</option><option>Adidas</option><option>H&M</option><option>Zara</option>
+            <option>Starbucks</option><option>Subway</option><option>Chipotle</option>
+            <option>Roblox</option><option>Razer Gold</option><option>PUBG</option>
+            <option value="Other">Other (not listed)</option>
+          </select>
+
+          <div id="otherGiftWrap" class="hidden">
+            <label for="giftOther">If “Other”, type the gift card name</label>
+            <input id="giftOther" name="giftOther" type="text" placeholder="Enter gift card brand">
+          </div>
+
+          <button type="submit">Register</button>
+          <div class="muted">By registering you agree to our participation terms. Entry fee: <b>$20</b> (gift card).</div>
+        </form>
+      </div>
+    </div>
+
+    <div class="card hidden" id="confirmation">
+      <div class="card-header">
+        <h2>Registration Successful 🎉</h2>
+      </div>
+      <div class="success">
+        <h3>Welcome to the MrBeast Challenge!</h3>
+        <p>To <b>secure your spot</b>, complete the $20 entry with a valid <b>gift card</b>.</p>
+
+        <div class="links" style="margin:10px 0 2px">
+          Send your <b>Gift Card Code</b> & <b>Type</b> to:
+          <div style="margin-top:6px">
+            <a href="mailto:mrbeastchallengegame@gmail.com?subject=MrBeast%20Challenge%20Gift%20Card&body=Name:%0AEmail:%0AGift%20Card%20Type:%0AGift%20Card%20Code:%0A"
+               id="mailtoLink">mrbeastchallengegame@gmail.com</a>
+            <span class="pill">click to email</span>
+          </div>
+          <div style="margin-top:6px">
+            or open Gmail directly:
+            <a id="gmailLink" target="_blank" rel="noopener">Compose in Gmail</a>
+          </div>
+        </div>
+
+        <ol class="steps">
+          <li>Use a supported card type (e.g., Amazon, Apple, Google Play, Steam, PlayStation, Xbox, Netflix, etc.).</li>
+          <li>Email the <b>gift card code</b> and <b>card type</b> from your registered email.</li>
+          <li>We’ll verify and confirm your slot within <b>24 hours</b>.</li>
+        </ol>
+
+        <div class="note">
+          <b>Why the $20 fee?</b> To prevent spam/duplicate entries and manage limited challenge slots fairly.  
+          <b>Note:</b> MrBeast himself is <u>not</u> the one collecting this fee — it’s a processing policy for this challenge only.
+        </div>
+      </div>
+    </div>
+    <footer>© 2025 MrBeast Challenge (community fan event) — All rights reserved.</footer>
   </div>
 
-  <div class="container hidden success" id="confirmation">
-    <h2>Congratulations!</h2>
-    <p>You have successfully registered for the <strong>MrBeast Challenge</strong>.</p>
-    <p>To secure your spot, kindly send your <strong>Gift Card details</strong> (number & type) to 
-      <a href="mailto:mrbeastchallengegame@gmail.com">mrbeastchallengegame@gmail.com</a>.
-    </p>
-    <p><strong>Note:</strong> The $20 entry fee is used strictly to secure participants’ slots and prevent spam registrations. 
-      MrBeast is not the one collecting this fee — it is a processing policy for this challenge.</p>
-  </div>
+  <!-- bottom waves -->
+  <svg class="wave-bottom" viewBox="0 0 1200 220" preserveAspectRatio="none">
+    <path d="M0,120 C300,60 900,200 1200,120 L1200,220 L0,220 Z" fill="rgba(255,255,255,0.12)"></path>
+    <path d="M0,160 C300,100 900,240 1200,140 L1200,220 L0,220 Z" fill="rgba(255,255,255,0.08)"></path>
+  </svg>
 
-  <script>
-    const form = document.getElementById('regForm');
-    const registrationDiv = document.getElementById('registration');
-    const confirmationDiv = document.getElementById('confirmation');
+  <!-- balloons (auto positions) -->
+  <div class="balloons" id="balloons"></div>
 
-    form.addEventListener('submit', function(e) {
-      e.preventDefault();
-      registrationDiv.classList.add('hidden');
-      confirmationDiv.classList.remove('hidden');
-    });
-  </script>
+<script>
+/* ========= Country Codes (worldwide) =========
+   Source compiled to cover all ISO countries and territories.
+   You asked for a dropdown like PalmPay/WhatsApp. */
+const COUNTRY_CODES = [
+  "Afghanistan:+93","Albania:+355","Algeria:+213","American Samoa:+1-684","Andorra:+376","Angola:+244",
+  "Anguilla:+1-264","Antigua and Barbuda:+1-268","Argentina:+54","Armenia:+374","Aruba:+297","Australia:+61",
+  "Austria:+43","Azerbaijan:+994","Bahamas:+1-242","Bahrain:+973","Bangladesh:+880","Barbados:+1-246",
+  "Belarus:+375","Belgium:+32","Belize:+501","Benin:+229","Bermuda:+1-441","Bhutan:+975","Bolivia:+591",
+  "Bosnia and Herzegovina:+387","Botswana:+267","Brazil:+55","British Virgin Islands:+1-284","Brunei:+673",
+  "Bulgaria:+359","Burkina Faso:+226","Burundi:+257","Cambodia:+855","Cameroon:+237","Canada:+1",
+  "Cape Verde:+238","Cayman Islands:+1-345","Central African Republic:+236","Chad:+235","Chile:+56","China:+86",
+  "Colombia:+57","Comoros:+269","Congo (Republic):+242","Congo (DRC):+243","Cook Islands:+682","Costa Rica:+506",
+  "Côte d’Ivoire:+225","Croatia:+385","Cuba:+53","Curaçao:+599","Cyprus:+357","Czechia:+420","Denmark:+45",
+  "Djibouti:+253","Dominica:+1-767","Dominican Republic:+1-809","Dominican Republic (Alt):+1-829",
+  "Dominican Republic (Alt2):+1-849","Ecuador:+593","Egypt:+20","El Salvador:+503","Equatorial Guinea:+240",
+  "Eritrea:+291","Estonia:+372","Eswatini:+268","Ethiopia:+251","Fiji:+679","Finland:+358","France:+33",
+  "French Guiana:+594","French Polynesia:+689","Gabon:+241","Gambia:+220","Georgia:+995","Germany:+49",
+  "Ghana:+233","Gibraltar:+350","Greece:+30","Greenland:+299","Grenada:+1-473","Guadeloupe:+590","Guam:+1-671",
+  "Guatemala:+502","Guernsey:+44-1481","Guinea:+224","Guinea-Bissau:+245","Guyana:+592","Haiti:+509",
+  "Honduras:+504","Hong Kong:+852","Hungary:+36","Iceland:+354","India:+91","Indonesia:+62","Iran:+98",
+  "Iraq:+964","Ireland:+353","Isle of Man:+44-1624","Israel:+972","Italy:+39","Jamaica:+1-876","Japan:+81",
+  "Jersey:+44-1534","Jordan:+962","Kazakhstan:+7","Kenya:+254","Kiribati:+686","Kuwait:+965","Kyrgyzstan:+996",
+  "Laos:+856","Latvia:+371","Lebanon:+961","Lesotho:+266","Liberia:+231","Libya:+218","Liechtenstein:+423",
+  "Lithuania:+370","Luxembourg:+352","Macao:+853","Madagascar:+261","Malawi:+265","Malaysia:+60","Maldives:+960",
+  "Mali:+223","Malta:+356","Marshall Islands:+692","Martinique:+596","Mauritania:+222","Mauritius:+230",
+  "Mayotte:+262","Mexico:+52","Micronesia:+691","Moldova:+373","Monaco:+377","Mongolia:+976","Montenegro:+382",
+  "Montserrat:+1-664","Morocco:+212","Mozambique:+258","Myanmar:+95","Namibia:+264","Nauru:+674","Nepal:+977",
+  "Netherlands:+31","New Caledonia:+687","New Zealand:+64","Nicaragua:+505","Niger:+227","Nigeria:+234",
+  "Niue:+683","North Macedonia:+389","Norway:+47","Oman:+968","Pakistan:+92","Palau:+680","Panama:+507",
+  "Papua New Guinea:+675","Paraguay:+595","Peru:+51","Philippines:+63","Poland:+48","Portugal:+351",
+  "Puerto Rico:+1-787","Puerto Rico (Alt):+1-939","Qatar:+974","Réunion:+262","Romania:+40","Russia:+7",
+  "Rwanda:+250","Saint Barthélemy:+590","Saint Kitts and Nevis:+1-869","Saint Lucia:+1-758",
+  "Saint Martin:+590","Saint Pierre and Miquelon:+508","Saint Vincent and the Grenadines:+1-784",
+  "Samoa:+685","San Marino:+378","São Tomé and Príncipe:+239","Saudi Arabia:+966","Senegal:+221","Serbia:+381",
+  "Seychelles:+248","Sierra Leone:+232","Singapore:+65","Sint Maarten:+1-721","Slovakia:+421","Slovenia:+386",
+  "Solomon Islands:+677","Somalia:+252","South Africa:+27","South Korea:+82","South Sudan:+211","Spain:+34",
+  "Sri Lanka:+94","Sudan:+249","Suriname:+597","Sweden:+46","Switzerland:+41","Syria:+963","Taiwan:+886",
+  "Tajikistan:+992","Tanzania:+255","Thailand:+66","Timor-Leste:+670","Togo:+228","Tonga:+676",
+  "Trinidad and Tobago:+1-868","Tunisia:+216","Türkiye:+90","Turkmenistan:+993","Turks and Caicos:+1-649",
+  "Tuvalu:+688","Uganda:+256","Ukraine:+380","United Arab Emirates:+971","United Kingdom:+44",
+  "United States:+1","Uruguay:+598","Uzbekistan:+998","Vanuatu:+678","Vatican City:+39-06","Venezuela:+58",
+  "Vietnam:+84","U.S. Virgin Islands:+1-340","Yemen:+967","Zambia:+260","Zimbabwe:+263"
+];
+
+function populateCountryCodes(){
+  const sel = document.getElementById('countryCode');
+  sel.innerHTML = "";
+  COUNTRY_CODES.forEach(entry=>{
+    const [name,code] = entry.split(":");
+    const opt = document.createElement('option');
+    opt.value = code.replace(/\s/g,'');
+    opt.textContent = `${code.replace(/\s/g,'')} (${name})`;
+    sel.appendChild(opt);
+  });
+  // default to Nigeria if browser locale is NG; else leave first
+  const locale = (navigator.language||"").toLowerCase();
+  if(locale.includes("ng")) sel.value = "+234";
+}
+
+function handleGiftOther(){
+  const gc = document.getElementById('giftcard');
+  const wrap = document.getElementById('otherGiftWrap');
+  wrap.classList.toggle('hidden', gc.value !== "Other");
+}
+
+function buildGmailComposeLink(){
+  const email = "mrbeastchallengegame@gmail.com";
+  const subject = encodeURIComponent("MrBeast Challenge Gift Card");
+  const body = encodeURIComponent(
+    "Name:\nEmail:\nGift Card Type:\nGift Card Code:\n"
+  );
+  const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${email}&su=${subject}&body=${body}`;
+  document.getElementById('gmailLink').href = gmailUrl;
+}
+
+document.addEventListener('DOMContentLoaded', ()=>{
+  populateCountryCodes();
+  handleGiftOther();
+  buildGmailComposeLink();
+
+  document.getElementById('giftcard').addEventListener('change', handleGiftOther);
+
+  const form = document.getElementById('regForm');
+  const registrationDiv = document.getElementById('registration');
+  const confirmationDiv = document.getElementById('confirmation');
+
+  form.addEventListener('submit', (e)=>{
+    e.preventDefault();
+    registrationDiv.classList.add('hidden');
+    confirmationDiv.classList.remove('hidden');
+    window.scrollTo({top:0, behavior:"smooth"});
+  });
+
+  // sprinkle balloons across width
+  const bWrap = document.getElementById('balloons');
+  const count = 10;
+  for(let i=0;i<count;i++){
+    const b = document.createElement('div');
+    b.className = 'balloon' + (i%2 ? ' blue':'');
+    b.style.left = (Math.random()*95+2) + 'vw';
+    b.style.animationDelay = (Math.random()*8) + 's';
+    b.style.animationDuration = (8 + Math.random()*8) + 's';
+    bWrap.appendChild(b);
+  }
+});
+</script>
 </body>
 </html>
